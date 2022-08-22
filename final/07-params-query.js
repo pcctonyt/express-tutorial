@@ -38,16 +38,19 @@ app.get('/api/v1/query', (req, res) => {
   const { search, limit } = req.query
   let sortedProducts = [...products]
 
+  // these if conditionals mean we don't just have to send back hello world
   if (search) {
     sortedProducts = sortedProducts.filter((product) => {
       return product.name.startsWith(search)
     })
   }
   if (limit) {
+    //the Number object is there because they're passing in a string and we're changing it back to a number
     sortedProducts = sortedProducts.slice(0, Number(limit))
   }
   if (sortedProducts.length < 1) {
     // res.status(200).send('no products matched your search');
+    // below is more common way of dealing with no products able to be returned instead of passing in just the string, not having the return statement below throws an error in the console since js just keeps reaading the code after express has sent the response.  Normally, the queries aren't set up separately like they are here
     return res.status(200).json({ sucess: true, data: [] })
   }
   res.status(200).json(sortedProducts)
